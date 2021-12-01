@@ -2,6 +2,7 @@ import os
 import requests
 from requests.models import HTTPError
 from urllib.parse import urlparse
+import argparse
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -55,17 +56,26 @@ def is_bitlink(bitly_access_token: str, template_url: str, users_url: str):
     return response.ok
 
 
+def get_parse_params():
+    parser = argparse.ArgumentParser(
+        description='Программа для сокращения введённых ссылок и подсчёта количества кликов'
+        )
+    parser.add_argument('url', nargs='+', help='URL-адреса, которые хотите сократить или проверить по ним количество кликов')
+    return parser.parse_args().url
+
+
 def main():
-    template_url = 'https://api-ssl.bitly.com/v4/'
-    users_url = input('Введите ссылку: ')
     BITLY_ACCESS_TOKEN = os.getenv('BITLY_ACCESS_TOKEN')
-    try:
-      if is_bitlink(BITLY_ACCESS_TOKEN, template_url, users_url):
-        print('По вашей ссылке прошли:', get_count_clicks(BITLY_ACCESS_TOKEN, template_url, users_url), 'раз(а)')
-      else:
-        print('Битлинк:', get_shorten_link(BITLY_ACCESS_TOKEN, template_url, users_url))
-    except HTTPError:
-        print('Некорректный адрес URL. Ссылка должна начинаться c протокола HTTP: https://URL, либо http://URL')
+    template_url = 'https://api-ssl.bitly.com/v4/'
+    users_url = get_parse_params()
+    for url in users_url:
+        try:
+            if is_bitlink(BITLY_ACCESS_TOKEN, template_url, url):
+                print(f'По вашей ссылке {url} прошли:', get_count_clicks(BITLY_ACCESS_TOKEN, template_url, url), 'раз(а)')
+            else:
+                print(f'Битлинк для ссылки {url} -', get_shorten_link(BITLY_ACCESS_TOKEN, template_url, url))
+        except HTTPError:
+            print('Некорректный адрес URL. Ссылка должна начинаться c протокола HTTP: https://URL, либо http://URL')
 
 
 if __name__ == '__main__':
