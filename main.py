@@ -59,7 +59,9 @@ def get_parse_params():
     parser = argparse.ArgumentParser(
         description='Программа для сокращения введённых ссылок и подсчёта количества кликов'
         )
-    parser.add_argument('url', nargs='+', help='URL-адреса, которые хотите сократить или проверить по ним количество кликов')
+    parser.add_argument('url',
+                        nargs='+',
+                        help='URL-адреса, которые хотите сократить или проверить по ним количество кликов')
     return parser.parse_args().url
 
 
@@ -71,7 +73,8 @@ def main():
     for url in users_url:
         try:
             if is_bitlink(BITLY_ACCESS_TOKEN, template_url, url):
-                print(f'По вашей ссылке {url} прошли:', get_count_clicks(BITLY_ACCESS_TOKEN, template_url, url), 'раз(а)')
+                print(f'По вашей ссылке {url} прошли:', get_count_clicks(BITLY_ACCESS_TOKEN, template_url, url),
+                        'раз(а)')
             else:
                 print(f'Битлинк для ссылки {url} -', get_shorten_link(BITLY_ACCESS_TOKEN, template_url, url))
         except HTTPError:
