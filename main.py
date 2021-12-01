@@ -4,7 +4,6 @@ from requests.models import HTTPError
 from urllib.parse import urlparse
 import argparse
 from dotenv import load_dotenv
-load_dotenv()
 
 
 def parse_url_into_components(users_url: str):
@@ -65,6 +64,7 @@ def get_parse_params():
 
 
 def main():
+    load_dotenv()
     BITLY_ACCESS_TOKEN = os.getenv('BITLY_ACCESS_TOKEN')
     template_url = 'https://api-ssl.bitly.com/v4/'
     users_url = get_parse_params()
